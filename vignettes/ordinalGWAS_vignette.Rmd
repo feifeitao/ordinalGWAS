@@ -1,0 +1,223 @@
+---
+title: "User Guide for ordinalGWAS"
+author: "Feifei Tao <Feifei_Tao@eisai.com>"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ordinalGWAS_vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ordinalGWAS)
+```
+
+----------
+
+# 1. Introduction
+* This package performs genetic association analysis of ordinal phenotypes using ordered logistic regression by calling the polr function in MASS package. It is designed to analyze a batch of SNPs, and can be applied to genome-wide analysis by splitting the data into smaller datasets (e.g. by chromosomes).
+* The genotype file used in this package is generated from plink format files using plink --recode A (for additive model) or plink --recode AD (for additive and dominant model). The analysis can be applied to multiple phenotypes by including a phenotype file. One can also adjust for covariates in the analysis by including a covariate file.
+* The analysis will provide association P values, beta, standard error, test statistics, odds ratios, and 95% confidence intervals of the odds ratios.
+
+----------
+
+# 2. Input data files
+The input data include a genotype file, an optional phenotype file, and an optional covariate file.
+
+### Genotype file (.raw)
+* Genotype file is generated using plink --recode A (additive model) or plink --recode AD (additive and dominant).
+```{bash,eval=F}
+plink --bfile example --recode A --out example.A
+plink --bfile example --recode AD --out example.AD
+```
+
+### Phenotype file (optional)
+* Phenotype file is a tab or space delimited file with a header.
+* The first two columns are FID and IID, and additional columns are phenotype data.
+* Missing data can be coded as blank, NA or -9.
+* The phenotype data should be numeric, with 3 or more levels.
+* If there is no phenotype file specified, the default phenotype in the .raw genotype file will be used for analysis.
+
+### Covariate file (optional)
+* Covariate file has the same format as phenotype file.
+* Phenotypes and covariates can be included in one file.
+
+### Notes
+* This package does not perform data QC or filter/manipulate SNPs. All SNPs in the genotype file will be analyzed. Data QC and SNP filtering should be performed in PLINK before analysis.
+* For large datasets, we recommend split the data into smaller datasets (e.g., by chromosomes) for analysis.
+
+----------
+
+# 3. Mock datasets
+* The package includes 5 mock datasets:
+    * *example.A.raw*
+    * *example.AD.raw*
+    * *example.pheno.txt*
+    * *example.covar.txt*
+    * *example.pheno.covar.txt*
+* Genotype files include 100 variants and 89 samples.
+    * *example.A.raw* (additive model)
+    * *example.AD.raw* (additive and dominant model)
+* Phenotype file includes 3 phenotypes: PHENOTYPE1, PHENOTYPE2, PHENOTYPE3.
+    * *example.pheno.txt*
+* Covariate file includes 3 covariates: COVARIATE1, COVARIATE2, COVARIATE3.
+    * *example.covar.txt*
+* The phenotype/covariate file includes 3 phenotypes and 3 covariates.
+    * *example.pheno.covar.txt*
+* The files can be accessed using the following commands.
+```{r,eval=F}
+File.A <- system.file("extdata", "example.A.raw", package="ordinalGWAS")
+File.AD <- system.file("extdata", "example.AD.raw", package="ordinalGWAS")
+File.pheno <- system.file("extdata", "example.pheno.txt", package="ordinalGWAS")
+File.covar <- system.file("extdata", "example.covar.txt", package="ordinalGWAS")
+File.pheno.covar <- system.file("extdata", "example.pheno.covar.txt", package="ordinalGWAS")
+```
+
+----------
+
+# 4. Analysis workflow
+### Step 0. Load the package
+```{r,eval=F}
+library(ordinalGWAS)
+```
+
+### Step 1. Load input data files and create a data object
+```{r,eval=F}
+myObj <- loadData(geno.file, pheno.file=NA, covar.file=NA, same.pheno.covar.file=F)
+```
+* Arguments:
+    * **geno.file**: Path to input genotype data created by PLINK --recode A or AD. Required field.
+    * **pheno.file**: Path to input phenotype file. Optional field. If pheno.file is not specified, the phenotype from genotype file will be used for analysis.
+    * **covar.file**: Path to input covariate file. Optional field. If covar.file is not specified & same.pheno.covar.file is False, the analysis will not include covariates.
+    * **same.pheno.covar.file**: Default is False. Set to True if phenotypes and covariates are included in one file. In this case, the pheno.file option will be used for both phenotype and covariate files, and the covar.file option will not be used.
+* Output:
+    * The function returns a data object for Step 2.
+
+### Step 2. Load analysis options and check input data
+```{r,eval=F}
+checkedObj <- checkData(obj=myObj, pheno.name=NA, covar.name=NA, all.pheno=F, all.covar=F)
+```
+* Arguments:
+    * **obj**: Input data object created in Step 1. Required field.
+    * **pheno.name**: Optional field. A character vector of phenotypes for analysis.
+    * **covar.name**: Optional field. A character vector of covariates for analysis. 
+    * **all.pheno**: Default is False. If all.pheno is True, all phenotypes in the phenotype file will be analyzed.
+    * **all.covar**: Default is False. If all.covar is True, all covariates in the covariate file will be included in the analysis.
+* Output:
+    * The function returns a data object, which contains the input data and analysis options, to be used in Step 3.
+* Notes:
+    * If same.pheno.covar.file is True in Step 1 loadData, do not use all.pheno and all.covar options in Step 2.
+    * When all.pheno or all.covar is set to True, pheno.name or covar.name option will not be used.
+
+### Step 3. Run ordered logistic regression with data and analysis options from Step 2.
+```{r,eval=F}
+results <- runAnalysis( obj=checkedObj )
+```
+* Arguments:
+    * The data object created in step 2.
+* Output:
+    * A data frame of analysis results, including the following columns: Phenotype, SNP, BETA, SE, Tvalue, P, OR, L95, U95.
+
+### Step 4. (Optional) Add A1 allele and genetic model in the results.
+```{r,eval=F}
+new.results <- splitSNP(results)
+```
+* Arguments:
+    * Result data frame from Step 3.
+* Output:
+    * A new result data frame with A1 allele (for A and AD models) and genetic model (for AD model only).
+    * Output for A model: Phenotype, SNP, A1, BETA, SE, Tvalue, P, OR, L95, U95.
+    * Output for AD model: Phenotype, SNP, A1, BETA, SE, Tvalue, P, OR, L95, U95, Model.
+* Notes:
+    * By default, the SNP names generated from plink --recode A/AD are formatted as SNP_A1 (additive model) or SNP_HET (dominant model).
+	* This function splits this column into SNP and A1 in the results.
+	* For AD model, a new Model column is added in the results.
+
+----------
+
+# 5. Examples
+### Load mock data files
+```{r,eval=T}
+File.A <- system.file("extdata", "example.A.raw", package="ordinalGWAS")
+File.AD <- system.file("extdata", "example.AD.raw", package="ordinalGWAS")
+File.pheno <- system.file("extdata", "example.pheno.txt", package="ordinalGWAS")
+File.covar <- system.file("extdata", "example.covar.txt", package="ordinalGWAS")
+File.pheno.covar <- system.file("extdata", "example.pheno.covar.txt", package="ordinalGWAS")
+```
+
+### Run analysis with default phenotype in the genotype file
+```{r,eval=T}
+myObj <- loadData( geno.file=File.A )
+checkedObj <- checkData( obj=myObj )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Run analysis with a pheno file and a subset of phenotypes
+```{r,eval=T}
+myObj <- loadData( geno.file=File.A, 
+	pheno.file=File.pheno )
+checkedObj <- checkData( obj=myObj, pheno.name=c("PHENOTYPE2", "PHENOTYPE3") )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Run analysis with a pheno file and include all phenotypes
+```{r,eval=T}
+checkedObj <- checkData( obj=myObj, all.pheno=T )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Run analysis with pheno and covar included in the same file
+```{r,eval=T}
+myObj <- loadData( geno.file=File.A, 
+	pheno.file=File.pheno.covar, same.pheno.covar.file=T )
+checkedObj <- checkData( obj=myObj, pheno.name="PHENOTYPE1", covar.name="COVARIATE1" )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Run analysis with a pheno file and a covar file
+```{r,eval=T}
+myObj <- loadData( geno.file=File.A, 
+	pheno.file=File.pheno,
+	covar.file=File.covar )
+checkedObj <- checkData( obj=myObj,
+	pheno.name=c("PHENOTYPE1","PHENOTYPE2"), 
+	covar.name=c("COVARIATE1","COVARIATE2") )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Add A1 allele (additive model)
+```{r,eval=T}
+new.results <- splitSNP(results)
+head(new.results,4)
+```
+
+### Run analysis with genotype data of AD model
+```{r,eval=T}
+myObj <- loadData( geno.file=File.AD, 
+	pheno.file=File.pheno,
+	covar.file=File.covar )
+checkedObj <- checkData( obj=myObj,
+	pheno.name=c("PHENOTYPE1","PHENOTYPE2"), 
+	covar.name=c("COVARIATE1","COVARIATE2") )
+results <- runAnalysis( obj=checkedObj )
+head(results,4)
+```
+
+### Add A1 allele and genetic model (AD model)
+```{r,eval=T}
+new.results <- splitSNP(results)
+head(new.results,4)
+```
