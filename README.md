@@ -9,4 +9,4 @@ install_github("feifeitao/ordinalGWAS")
 ```
 
 ## User guide
-User guide for ordinalGWAS is available [here](https://github.com/feifeitao/ordinalGWAS/blob/master/vignettes/ordinalGWAS_vignette.html).
+User guide for ordinalGWAS is available [here](https://github.com/feifeitao/ordinalGWAS/blob/master/vignettes/ordinalGWAS_vignette.html). The user guide describes the input file format, analysis workflow, output format, and provides a set of mock data and analysis examples.
