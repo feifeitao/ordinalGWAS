@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Feifei Tao Feifei_Tao@eisai.com" />
+
+<meta name="date" content="2019-12-23" />
+
+<title>User Guide for ordinalGWAS</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">User Guide for ordinalGWAS</h1>
+<h4 class="author"><em>Feifei Tao <a href="mailto:Feifei_Tao@eisai.com" class="email">Feifei_Tao@eisai.com</a></em></h4>
+<h4 class="date"><em>December 23, 2019</em></h4>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(ordinalGWAS)</a></code></pre></div>
+<hr />
+<div id="introduction" class="section level1">
+<h1>1. Introduction</h1>
+<ul>
+<li>This package performs genetic association analysis of ordinal phenotypes using ordered logistic regression by calling the polr function in MASS package. It is designed to analyze a batch of SNPs, and can be applied to genome-wide analysis by splitting the data into smaller datasets (e.g. by chromosomes).</li>
+<li>The genotype file used in this package is generated from plink format files using plink –recode A (for additive model) or plink –recode AD (for additive and dominant model). The analysis can be applied to multiple phenotypes by including a phenotype file. One can also adjust for covariates in the analysis by including a covariate file.</li>
+<li>The analysis will provide association P values, beta, standard error, test statistics, odds ratios, and 95% confidence intervals of the odds ratios.</li>
+</ul>
+<hr />
+</div>
+<div id="input-data-files" class="section level1">
+<h1>2. Input data files</h1>
+<p>The input data include a genotype file, an optional phenotype file, and an optional covariate file.</p>
+<div id="genotype-file-.raw" class="section level3">
+<h3>Genotype file (.raw)</h3>
+<ul>
+<li>Genotype file is generated using plink –recode A (additive model) or plink –recode AD (additive and dominant).</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="ex">plink</span> --bfile example --recode A --out example.A</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="ex">plink</span> --bfile example --recode AD --out example.AD</a></code></pre></div>
+</div>
+<div id="phenotype-file-optional" class="section level3">
+<h3>Phenotype file (optional)</h3>
+<ul>
+<li>Phenotype file is a tab or space delimited file with a header.</li>
+<li>The first two columns are FID and IID, and additional columns are phenotype data.</li>
+<li>Missing data can be coded as blank, NA or -9.</li>
+<li>The phenotype data should be numeric, with 3 or more levels.</li>
+<li>If there is no phenotype file specified, the default phenotype in the .raw genotype file will be used for analysis.</li>
+</ul>
+</div>
+<div id="covariate-file-optional" class="section level3">
+<h3>Covariate file (optional)</h3>
+<ul>
+<li>Covariate file has the same format as phenotype file.</li>
+<li>Phenotypes and covariates can be included in one file.</li>
+</ul>
+</div>
+<div id="notes" class="section level3">
+<h3>Notes</h3>
+<ul>
+<li>This package does not perform data QC or filter/manipulate SNPs. All SNPs in the genotype file will be analyzed. Data QC and SNP filtering should be performed in PLINK before analysis.</li>
+<li>For large datasets, we recommend split the data into smaller datasets (e.g., by chromosomes) for analysis.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="mock-datasets" class="section level1">
+<h1>3. Mock datasets</h1>
+<ul>
+<li>The package includes 5 mock datasets:
+<ul>
+<li><em>example.A.raw</em></li>
+<li><em>example.AD.raw</em></li>
+<li><em>example.pheno.txt</em></li>
+<li><em>example.covar.txt</em></li>
+<li><em>example.pheno.covar.txt</em></li>
+</ul></li>
+<li>Genotype files include 100 variants and 89 samples.
+<ul>
+<li><em>example.A.raw</em> (additive model)</li>
+<li><em>example.AD.raw</em> (additive and dominant model)</li>
+</ul></li>
+<li>Phenotype file includes 3 phenotypes: PHENOTYPE1, PHENOTYPE2, PHENOTYPE3.
+<ul>
+<li><em>example.pheno.txt</em></li>
+</ul></li>
+<li>Covariate file includes 3 covariates: COVARIATE1, COVARIATE2, COVARIATE3.
+<ul>
+<li><em>example.covar.txt</em></li>
+</ul></li>
+<li>The phenotype/covariate file includes 3 phenotypes and 3 covariates.
+<ul>
+<li><em>example.pheno.covar.txt</em></li>
+</ul></li>
+<li>The files can be accessed using the following commands.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">File.A &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.A.raw&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">File.AD &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.AD.raw&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">File.pheno &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.pheno.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">File.covar &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.covar.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">File.pheno.covar &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.pheno.covar.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a></code></pre></div>
+<hr />
+</div>
+<div id="analysis-workflow" class="section level1">
+<h1>4. Analysis workflow</h1>
+<div id="step-0.-load-the-package" class="section level3">
+<h3>Step 0. Load the package</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(ordinalGWAS)</a></code></pre></div>
+</div>
+<div id="step-1.-load-input-data-files-and-create-a-data-object" class="section level3">
+<h3>Step 1. Load input data files and create a data object</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>(geno.file, <span class="dt">pheno.file=</span><span class="ot">NA</span>, <span class="dt">covar.file=</span><span class="ot">NA</span>, <span class="dt">same.pheno.covar.file=</span>F)</a></code></pre></div>
+<ul>
+<li>Arguments:
+<ul>
+<li><strong>geno.file</strong>: Path to input genotype data created by PLINK –recode A or AD. Required field.</li>
+<li><strong>pheno.file</strong>: Path to input phenotype file. Optional field. If pheno.file is not specified, the phenotype from genotype file will be used for analysis.</li>
+<li><strong>covar.file</strong>: Path to input covariate file. Optional field. If covar.file is not specified &amp; same.pheno.covar.file is False, the analysis will not include covariates.</li>
+<li><strong>same.pheno.covar.file</strong>: Default is False. Set to True if phenotypes and covariates are included in one file. In this case, the pheno.file option will be used for both phenotype and covariate files, and the covar.file option will not be used.</li>
+</ul></li>
+<li>Output:
+<ul>
+<li>The function returns a data object for Step 2.</li>
+</ul></li>
+</ul>
+</div>
+<div id="step-2.-load-analysis-options-and-check-input-data" class="section level3">
+<h3>Step 2. Load analysis options and check input data</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>(<span class="dt">obj=</span>myObj, <span class="dt">pheno.name=</span><span class="ot">NA</span>, <span class="dt">covar.name=</span><span class="ot">NA</span>, <span class="dt">all.pheno=</span>F, <span class="dt">all.covar=</span>F)</a></code></pre></div>
+<ul>
+<li>Arguments:
+<ul>
+<li><strong>obj</strong>: Input data object created in Step 1. Required field.</li>
+<li><strong>pheno.name</strong>: Optional field. A character vector of phenotypes for analysis.</li>
+<li><strong>covar.name</strong>: Optional field. A character vector of covariates for analysis.</li>
+<li><strong>all.pheno</strong>: Default is False. If all.pheno is True, all phenotypes in the phenotype file will be analyzed.</li>
+<li><strong>all.covar</strong>: Default is False. If all.covar is True, all covariates in the covariate file will be included in the analysis.</li>
+</ul></li>
+<li>Output:
+<ul>
+<li>The function returns a data object, which contains the input data and analysis options, to be used in Step 3.</li>
+</ul></li>
+<li>Notes:
+<ul>
+<li>If same.pheno.covar.file is True in Step 1 loadData, do not use all.pheno and all.covar options in Step 2.</li>
+<li>When all.pheno or all.covar is set to True, pheno.name or covar.name option will not be used.</li>
+</ul></li>
+</ul>
+</div>
+<div id="step-3.-run-ordered-logistic-regression-with-data-and-analysis-options-from-step-2." class="section level3">
+<h3>Step 3. Run ordered logistic regression with data and analysis options from Step 2.</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a></code></pre></div>
+<ul>
+<li>Arguments:
+<ul>
+<li>The data object created in step 2.</li>
+</ul></li>
+<li>Output:
+<ul>
+<li>A data frame of analysis results, including the following columns: Phenotype, SNP, BETA, SE, Tvalue, P, OR, L95, U95.</li>
+</ul></li>
+</ul>
+</div>
+<div id="step-4.-optional-add-a1-allele-and-genetic-model-in-the-results." class="section level3">
+<h3>Step 4. (Optional) Add A1 allele and genetic model in the results.</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">new.results &lt;-<span class="st"> </span><span class="kw">splitSNP</span>(results)</a></code></pre></div>
+<ul>
+<li>Arguments:
+<ul>
+<li>Result data frame from Step 3.</li>
+</ul></li>
+<li>Output:
+<ul>
+<li>A new result data frame with A1 allele (for A and AD models) and genetic model (for AD model only).</li>
+<li>Output for A model: Phenotype, SNP, A1, BETA, SE, Tvalue, P, OR, L95, U95.</li>
+<li>Output for AD model: Phenotype, SNP, A1, BETA, SE, Tvalue, P, OR, L95, U95, Model.</li>
+</ul></li>
+<li>Notes:
+<ul>
+<li>By default, the SNP names generated from plink –recode A/AD are formatted as SNP_A1 (additive model) or SNP_HET (dominant model).</li>
+<li>This function splits this column into SNP and A1 in the results.</li>
+<li>For AD model, a new Model column is added in the results.</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="examples" class="section level1">
+<h1>5. Examples</h1>
+<div id="load-mock-data-files" class="section level3">
+<h3>Load mock data files</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">File.A &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.A.raw&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">File.AD &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.AD.raw&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">File.pheno &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.pheno.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">File.covar &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.covar.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">File.pheno.covar &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;example.pheno.covar.txt&quot;</span>, <span class="dt">package=</span><span class="st">&quot;ordinalGWAS&quot;</span>)</a></code></pre></div>
+</div>
+<div id="run-analysis-with-default-phenotype-in-the-genotype-file" class="section level3">
+<h3>Run analysis with default phenotype in the genotype file</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>( <span class="dt">geno.file=</span>File.A )</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj )</a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt;   Phenotype          SNP        BETA        SE      Tvalue         P</span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; 1 PHENOTYPE  rs5747112_2 -0.19075291 0.3003603 -0.63508030 0.5253760</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; 2 PHENOTYPE rs11912641_1  0.05932285 0.7229828  0.08205292 0.9346046</span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; 3 PHENOTYPE  rs2238747_1 -0.33894357 0.2973315 -1.13995168 0.2543064</span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; 4 PHENOTYPE  rs5993507_1 -0.33894357 0.2973315 -1.13995168 0.2543064</span></a>
+<a class="sourceLine" id="cb10-10" data-line-number="10"><span class="co">#&gt;          OR       L95      U95</span></a>
+<a class="sourceLine" id="cb10-11" data-line-number="11"><span class="co">#&gt; 1 0.8263367 0.4586590 1.488758</span></a>
+<a class="sourceLine" id="cb10-12" data-line-number="12"><span class="co">#&gt; 2 1.0611178 0.2572525 4.376910</span></a>
+<a class="sourceLine" id="cb10-13" data-line-number="13"><span class="co">#&gt; 3 0.7125227 0.3978411 1.276109</span></a>
+<a class="sourceLine" id="cb10-14" data-line-number="14"><span class="co">#&gt; 4 0.7125227 0.3978411 1.276109</span></a></code></pre></div>
+</div>
+<div id="run-analysis-with-a-pheno-file-and-a-subset-of-phenotypes" class="section level3">
+<h3>Run analysis with a pheno file and a subset of phenotypes</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>( <span class="dt">geno.file=</span>File.A, </a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">    <span class="dt">pheno.file=</span>File.pheno )</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj, <span class="dt">pheno.name=</span><span class="kw">c</span>(<span class="st">&quot;PHENOTYPE2&quot;</span>, <span class="st">&quot;PHENOTYPE3&quot;</span>) )</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co">#&gt;    Phenotype          SNP       BETA        SE     Tvalue         P</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co">#&gt; 1 PHENOTYPE2  rs5747112_2 -0.2923955 0.2856756 -1.0235227 0.3060608</span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8"><span class="co">#&gt; 2 PHENOTYPE2 rs11912641_1 -0.6684382 0.6961226 -0.9602306 0.3369392</span></a>
+<a class="sourceLine" id="cb11-9" data-line-number="9"><span class="co">#&gt; 3 PHENOTYPE2  rs2238747_1 -0.4654614 0.3045820 -1.5281971 0.1264636</span></a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co">#&gt; 4 PHENOTYPE2  rs5993507_1 -0.4654614 0.3045820 -1.5281971 0.1264636</span></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11"><span class="co">#&gt;          OR       L95      U95</span></a>
+<a class="sourceLine" id="cb11-12" data-line-number="12"><span class="co">#&gt; 1 0.7464733 0.4264290 1.306718</span></a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co">#&gt; 2 0.5125084 0.1309666 2.005587</span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14"><span class="co">#&gt; 3 0.6278454 0.3456146 1.140548</span></a>
+<a class="sourceLine" id="cb11-15" data-line-number="15"><span class="co">#&gt; 4 0.6278454 0.3456146 1.140548</span></a></code></pre></div>
+</div>
+<div id="run-analysis-with-a-pheno-file-and-include-all-phenotypes" class="section level3">
+<h3>Run analysis with a pheno file and include all phenotypes</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj, <span class="dt">all.pheno=</span>T )</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt;    Phenotype          SNP        BETA        SE      Tvalue          P</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; 1 PHENOTYPE1  rs5747112_2  0.01627983 0.2820852  0.05771246 0.95397767</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#&gt; 2 PHENOTYPE1 rs11912641_1 -1.25799632 0.7324772 -1.71745465 0.08589613</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; 3 PHENOTYPE1  rs2238747_1  0.05135886 0.3068399  0.16738001 0.86707106</span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt; 4 PHENOTYPE1  rs5993507_1  0.05135886 0.3068399  0.16738001 0.86707106</span></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt;          OR       L95      U95</span></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; 1 1.0164131 0.5847348 1.766776</span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"><span class="co">#&gt; 2 0.2842229 0.0676353 1.194386</span></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12"><span class="co">#&gt; 3 1.0527006 0.5769289 1.920823</span></a>
+<a class="sourceLine" id="cb12-13" data-line-number="13"><span class="co">#&gt; 4 1.0527006 0.5769289 1.920823</span></a></code></pre></div>
+</div>
+<div id="run-analysis-with-pheno-and-covar-included-in-the-same-file" class="section level3">
+<h3>Run analysis with pheno and covar included in the same file</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>( <span class="dt">geno.file=</span>File.A, </a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">    <span class="dt">pheno.file=</span>File.pheno.covar, <span class="dt">same.pheno.covar.file=</span>T )</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj, <span class="dt">pheno.name=</span><span class="st">&quot;PHENOTYPE1&quot;</span>, <span class="dt">covar.name=</span><span class="st">&quot;COVARIATE1&quot;</span> )</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="co">#&gt;    Phenotype          SNP        BETA        SE      Tvalue          P</span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="co">#&gt; 1 PHENOTYPE1  rs5747112_2  0.02033210 0.2820691  0.07208199 0.94253666</span></a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"><span class="co">#&gt; 2 PHENOTYPE1 rs11912641_1 -1.25234848 0.7322030 -1.71038417 0.08719486</span></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="co">#&gt; 3 PHENOTYPE1  rs2238747_1  0.05975371 0.3071076  0.19456933 0.84573012</span></a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#&gt; 4 PHENOTYPE1  rs5993507_1  0.05975371 0.3071076  0.19456933 0.84573012</span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#&gt;          OR        L95      U95</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#&gt; 1 1.0205402 0.58712757 1.773894</span></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#&gt; 2 0.2858327 0.06805493 1.200506</span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#&gt; 3 1.0615751 0.58148734 1.938033</span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt; 4 1.0615751 0.58148734 1.938033</span></a></code></pre></div>
+</div>
+<div id="run-analysis-with-a-pheno-file-and-a-covar-file" class="section level3">
+<h3>Run analysis with a pheno file and a covar file</h3>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>( <span class="dt">geno.file=</span>File.A, </a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">    <span class="dt">pheno.file=</span>File.pheno,</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">    <span class="dt">covar.file=</span>File.covar )</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj,</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">    <span class="dt">pheno.name=</span><span class="kw">c</span>(<span class="st">&quot;PHENOTYPE1&quot;</span>,<span class="st">&quot;PHENOTYPE2&quot;</span>), </a>
+<a class="sourceLine" id="cb14-6" data-line-number="6">    <span class="dt">covar.name=</span><span class="kw">c</span>(<span class="st">&quot;COVARIATE1&quot;</span>,<span class="st">&quot;COVARIATE2&quot;</span>) )</a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="co">#&gt;    Phenotype          SNP        BETA        SE     Tvalue          P</span></a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="co">#&gt; 1 PHENOTYPE1  rs5747112_2  0.05723624 0.2844737  0.2012005 0.84054180</span></a>
+<a class="sourceLine" id="cb14-11" data-line-number="11"><span class="co">#&gt; 2 PHENOTYPE1 rs11912641_1 -1.21860264 0.7335564 -1.6612255 0.09666817</span></a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="co">#&gt; 3 PHENOTYPE1  rs2238747_1  0.04837569 0.3084360  0.1568419 0.87536944</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="co">#&gt; 4 PHENOTYPE1  rs5993507_1  0.04837569 0.3084360  0.1568419 0.87536944</span></a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="co">#&gt;         OR        L95      U95</span></a>
+<a class="sourceLine" id="cb14-15" data-line-number="15"><span class="co">#&gt; 1 1.058906 0.60633545 1.849276</span></a>
+<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="co">#&gt; 2 0.295643 0.07020422 1.245007</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="co">#&gt; 3 1.049565 0.57341379 1.921102</span></a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"><span class="co">#&gt; 4 1.049565 0.57341379 1.921102</span></a></code></pre></div>
+</div>
+<div id="add-a1-allele-additive-model" class="section level3">
+<h3>Add A1 allele (additive model)</h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">new.results &lt;-<span class="st"> </span><span class="kw">splitSNP</span>(results)</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="kw">head</span>(new.results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co">#&gt;    Phenotype        SNP A1        BETA        SE     Tvalue          P</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co">#&gt; 1 PHENOTYPE1  rs5747112  2  0.05723624 0.2844737  0.2012005 0.84054180</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co">#&gt; 2 PHENOTYPE1 rs11912641  1 -1.21860264 0.7335564 -1.6612255 0.09666817</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="co">#&gt; 3 PHENOTYPE1  rs2238747  1  0.04837569 0.3084360  0.1568419 0.87536944</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#&gt; 4 PHENOTYPE1  rs5993507  1  0.04837569 0.3084360  0.1568419 0.87536944</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="co">#&gt;         OR        L95      U95</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co">#&gt; 1 1.058906 0.60633545 1.849276</span></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co">#&gt; 2 0.295643 0.07020422 1.245007</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="co">#&gt; 3 1.049565 0.57341379 1.921102</span></a>
+<a class="sourceLine" id="cb15-12" data-line-number="12"><span class="co">#&gt; 4 1.049565 0.57341379 1.921102</span></a></code></pre></div>
+</div>
+<div id="run-analysis-with-genotype-data-of-ad-model" class="section level3">
+<h3>Run analysis with genotype data of AD model</h3>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">myObj &lt;-<span class="st"> </span><span class="kw">loadData</span>( <span class="dt">geno.file=</span>File.AD, </a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">    <span class="dt">pheno.file=</span>File.pheno,</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">    <span class="dt">covar.file=</span>File.covar )</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">checkedObj &lt;-<span class="st"> </span><span class="kw">checkData</span>( <span class="dt">obj=</span>myObj,</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">    <span class="dt">pheno.name=</span><span class="kw">c</span>(<span class="st">&quot;PHENOTYPE1&quot;</span>,<span class="st">&quot;PHENOTYPE2&quot;</span>), </a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">    <span class="dt">covar.name=</span><span class="kw">c</span>(<span class="st">&quot;COVARIATE1&quot;</span>,<span class="st">&quot;COVARIATE2&quot;</span>) )</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7">results &lt;-<span class="st"> </span><span class="kw">runAnalysis</span>( <span class="dt">obj=</span>checkedObj )</a>
+<a class="sourceLine" id="cb16-8" data-line-number="8"><span class="kw">head</span>(results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb16-9" data-line-number="9"><span class="co">#&gt;    Phenotype            SNP        BETA        SE      Tvalue          P</span></a>
+<a class="sourceLine" id="cb16-10" data-line-number="10"><span class="co">#&gt; 1 PHENOTYPE1    rs5747112_2  0.05723624 0.2844737  0.20120050 0.84054180</span></a>
+<a class="sourceLine" id="cb16-11" data-line-number="11"><span class="co">#&gt; 2 PHENOTYPE1  rs5747112_HET -0.01102043 0.4159980 -0.02649154 0.97886528</span></a>
+<a class="sourceLine" id="cb16-12" data-line-number="12"><span class="co">#&gt; 3 PHENOTYPE1   rs11912641_1 -1.21860264 0.7335564 -1.66122550 0.09666817</span></a>
+<a class="sourceLine" id="cb16-13" data-line-number="13"><span class="co">#&gt; 4 PHENOTYPE1 rs11912641_HET -1.21860264 0.7335564 -1.66122550 0.09666817</span></a>
+<a class="sourceLine" id="cb16-14" data-line-number="14"><span class="co">#&gt;          OR        L95      U95</span></a>
+<a class="sourceLine" id="cb16-15" data-line-number="15"><span class="co">#&gt; 1 1.0589059 0.60633545 1.849276</span></a>
+<a class="sourceLine" id="cb16-16" data-line-number="16"><span class="co">#&gt; 2 0.9890401 0.43763873 2.235178</span></a>
+<a class="sourceLine" id="cb16-17" data-line-number="17"><span class="co">#&gt; 3 0.2956430 0.07020422 1.245007</span></a>
+<a class="sourceLine" id="cb16-18" data-line-number="18"><span class="co">#&gt; 4 0.2956430 0.07020422 1.245007</span></a></code></pre></div>
+</div>
+<div id="add-a1-allele-and-genetic-model-ad-model" class="section level3">
+<h3>Add A1 allele and genetic model (AD model)</h3>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">new.results &lt;-<span class="st"> </span><span class="kw">splitSNP</span>(results)</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">head</span>(new.results,<span class="dv">4</span>)</a>
+<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="co">#&gt;    Phenotype        SNP A1        BETA        SE      Tvalue          P</span></a>
+<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co">#&gt; 1 PHENOTYPE1  rs5747112  2  0.05723624 0.2844737  0.20120050 0.84054180</span></a>
+<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt; 2 PHENOTYPE1  rs5747112  2 -0.01102043 0.4159980 -0.02649154 0.97886528</span></a>
+<a class="sourceLine" id="cb17-6" data-line-number="6"><span class="co">#&gt; 3 PHENOTYPE1 rs11912641  1 -1.21860264 0.7335564 -1.66122550 0.09666817</span></a>
+<a class="sourceLine" id="cb17-7" data-line-number="7"><span class="co">#&gt; 4 PHENOTYPE1 rs11912641  1 -1.21860264 0.7335564 -1.66122550 0.09666817</span></a>
+<a class="sourceLine" id="cb17-8" data-line-number="8"><span class="co">#&gt;          OR        L95      U95    Model</span></a>
+<a class="sourceLine" id="cb17-9" data-line-number="9"><span class="co">#&gt; 1 1.0589059 0.60633545 1.849276 Additive</span></a>
+<a class="sourceLine" id="cb17-10" data-line-number="10"><span class="co">#&gt; 2 0.9890401 0.43763873 2.235178 Dominant</span></a>
+<a class="sourceLine" id="cb17-11" data-line-number="11"><span class="co">#&gt; 3 0.2956430 0.07020422 1.245007 Additive</span></a>
+<a class="sourceLine" id="cb17-12" data-line-number="12"><span class="co">#&gt; 4 0.2956430 0.07020422 1.245007 Dominant</span></a></code></pre></div>
+</div>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
